@@ -27,8 +27,8 @@ Aktives Spiel erkannt: Hades
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/yourusername/game-category-detector.git
-    cd game-category-detector
+    git clone https://github.com/Githulhu/TwitchGameChange.git
+    cd TwitchGameChanger
     ```
 
 2. (Optional) Create a virtual environment:
