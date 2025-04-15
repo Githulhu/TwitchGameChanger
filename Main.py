@@ -1,45 +1,43 @@
+import json
 import psutil
+import os
 
-known_games = {
-    "hades.exe": "Hades",
-    "eldenring.exe": "Elden Ring",
-    "slaythespire.exe": "Slay the Spire",
-    "vampiresurvivors.exe": "Vampire Survivors",
-    "streamavatars.exe": "Stream Avatars",
-}
+def load_games(filename="games.json"):
+    if not os.path.exists(filename):
+        print("Konfogurationsdatei nicht gefunden!")
+        return{}, []
 
-def detect_running_games():
+    with open(filename, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        games = data.get("games", {})
+        blacklist = data.get("blacklist", [])
+        return games, blacklist
+
+def detect_running_games(games, blacklist):
     #scann all running processes
     for proc in psutil.process_iter(['pid', 'name']):
         try:
             # name of the running program
             name = proc.info['name']
-            if name and name.lower() in known_games:
+            if name:
+                lname = name.lower()
+                if lname in blacklist:
+                    continue
                 #game from list found
-                return known_games[name.lower()]
+                if lname in games:
+                    return games[lname]
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             # Some processes are not for watching
             continue
-    return None #no games found
 
-################## This is only for checking if psutil works and will be removed in one of the next itterations
-def list_running_executables():
-    print("Starte Prozess-Scan...\n")
+    return None #nothing found
 
-    for proc in psutil.process_iter(['pid', 'name']):
-        try:
-            # name of the running program
-            name = proc.info['name']
-            if name and name.endswith('.exe'):
-                print(f"PID: {proc.info['pid']} | Name: {name}")
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            # Some processes are not for watching
-            continue
-#################          
-          
+
+
 if __name__ == "__main__":
-    current_game = detect_running_games()
+    games, blacklist = load_games()
+    current_game = detect_running_games(games, blacklist)
     if current_game:
-        print(f"Aktives Spiel erkannt: {current_game})")
+        print(f"🎮 Aktives Spiel erkannt: {current_game}")
     else:
-        print("Kein bekanntes Spiel gefunden.")
+        print("🔍 Kein bekanntes Spiel erkannt oder nur geblacklistete Prozesse aktiv.")
