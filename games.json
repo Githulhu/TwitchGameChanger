@@ -1,0 +1,12 @@
+{
+  "games": {
+    "hades.exe": "Hades",
+    "eldenring.exe": "Elden Ring",
+    "slaythespire.exe": "Slay the Spire",
+    "vampiresurvivors.exe": "Vampire Survivors"
+  },
+  "blacklist": [
+    "streamavatars.exe",
+    "obs.exe"
+  ]
+}
